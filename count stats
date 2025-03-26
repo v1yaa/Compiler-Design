@@ -1,0 +1,46 @@
+%{
+#include <stdio.h>
+#include <ctype.h>
+
+int char_count = 0;
+int line_count = 0;
+int word_count = 0;
+int in_word = 0;
+
+void count_word() {
+    if (in_word) {
+        word_count++;
+        in_word = 0;
+    }
+}
+%}
+
+%%
+
+\n              { line_count++; char_count++; }
+[ \t]+          { char_count += yyleng; count_word(); }
+[a-zA-Z0-9_]+   { char_count += yyleng; in_word = 1; }
+.               { char_count++; }
+
+%%
+
+int main(int argc, char **argv) {
+    if (argc > 1) {
+        FILE *file = fopen(argv[1], "r");
+        if (!file) {
+            perror("Unable to open file");
+            return 1;
+        }
+        yyin = file;
+    }
+    yylex();
+    count_word(); // In case the last word wasn't followed by whitespace
+    printf("Characters: %d\n", char_count);
+    printf("Lines: %d\n", line_count);
+    printf("Words: %d\n", word_count);
+    return 0;
+}
+
+int yywrap() {
+    return 1;
+}
