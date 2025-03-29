@@ -1,0 +1,16 @@
+%{
+#include <stdio.h>
+int yywrap(void) { return 1; }
+%}
+
+%%
+[0-9]+ { printf("Number: %s\n", yytext); }
+[+\-*/] { printf("Operator: %s\n", yytext); }
+. ;
+%%
+
+int main() {
+    printf("Enter an expression: ");
+    yylex();
+    return 0;
+}
