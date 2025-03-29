@@ -1,0 +1,19 @@
+%{
+#include <stdio.h>
+int yywrap(void) { return 1; }
+%}
+
+%%
+
+"https://"[a-zA-Z0-9./_-]+ { printf("Valid HTTPS URL: %s\n", yytext); }
+"http://"[a-zA-Z0-9./_-]+ { printf("Valid HTTP URL: %s\n", yytext); }
+
+. ; // Ignore other characters
+
+%%
+
+int main() {
+    printf("Enter a URL: ");
+    yylex();
+    return 0;
+}
