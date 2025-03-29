@@ -1,0 +1,25 @@
+%{
+#include <stdio.h>
+int yywrap(void) { return 1; }
+%}
+
+%%
+"#include" { printf("Preprocessor Directive: %s\n", yytext); }
+"<stdio.h>" { printf("Header File: %s\n", yytext); }
+"void"|"int" { printf("Keyword: %s\n", yytext); }
+"main" { printf("Function: %s\n", yytext); }
+[a-zA-Z_][a-zA-Z0-9_]* { printf("Identifier: %s\n", yytext); }
+[0-9]+ { printf("Number: %s\n", yytext); }
+\"[^\"]*\" { printf("String Literal: %s\n", yytext); }
+[\+\-\*/=;] { printf("Operator/Symbol: %s\n", yytext); }
+[\{\}\(\)] { printf("Bracket: %s\n", yytext); }
+[\n\t ]+ ;
+. { printf("Unknown: %s\n", yytext); }
+
+%%
+
+int main() {
+    printf("Enter the C program (CTRL+Z then Enter to stop input):\n");
+    yylex();
+    return 0;
+}
